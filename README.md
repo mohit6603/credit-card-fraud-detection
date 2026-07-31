@@ -1,6 +1,15 @@
 # Credit Card Fraud Detection
 
-Production-style machine learning system that detects fraudulent card transactions on the
+**In plain English:** every time you tap your card, the bank has a split second to decide whether
+it's really you spending. This project builds that decision-maker — a model that reads a
+transaction and answers *"how likely is this fraud?"* It learned from 284,807 real (anonymized)
+European card transactions, of which only 492 were fraudulent. On data it had never seen, it
+catches about **3 of every 4 frauds** while wrongly flagging just **3 genuine customers out of
+56,651** — in money terms, preventing roughly **74% of fraud losses**. Because it outputs a
+probability rather than a yes/no, the bank can turn one dial — the decision threshold — to trade
+off missed fraud against annoyed customers, without retraining anything.
+
+Under the hood, it is a production-style machine learning system built on the
 [Kaggle Credit Card Fraud dataset](https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud)
 (284,807 transactions, 492 frauds — 0.172%). The system outputs a **fraud probability**, converts it
 to a decision with a **business-cost-optimized threshold**, and ships with a full evaluation suite,
