@@ -1,0 +1,53 @@
+# Central configuration for the Credit Card Fraud Detection project.
+# Every module reads from this file so behavior is changed here, not in code.
+
+paths:
+  raw_data: "data/raw/creditcard.csv"
+  processed_dir: "data/processed"
+  models_dir: "models"
+  artifacts_dir: "artifacts"
+  reports_dir: "reports"
+  images_dir: "reports/images"
+  logs_dir: "logs"
+
+data:
+  url: "https://storage.googleapis.com/download.tensorflow.org/data/creditcard.csv"
+  target: "Class"
+  expected_columns: 31          # Time, V1-V28, Amount, Class
+  expected_rows_min: 280000     # sanity floor for schema validation
+
+split:
+  test_size: 0.20               # held-out test set, touched ONCE at the end
+  val_size: 0.20                # carved from the training portion, for model/threshold selection
+  random_state: 42
+
+features:
+  drop: ["Time"]                # raw seconds-from-start is an artifact of the 2-day window
+  engineered:
+    hour: true                  # Hour of day derived from Time (fraud is time-dependent)
+    amount_log: true            # log1p(Amount) tames extreme right skew
+  scale: true                   # StandardScaler inside the pipeline (fit on train only)
+
+training:
+  models: ["logistic_regression", "random_forest", "xgboost", "lightgbm", "balanced_random_forest"]
+  strategies: ["class_weight", "smote", "undersample", "smote_tomek"]
+  selection_metric: "pr_auc"    # PR-AUC on validation set decides the winner
+  smote_k_neighbors: 5
+  tuning:
+    n_iter: 12                  # randomized search budget for the winning combo
+    cv_folds: 3
+    scoring: "average_precision"
+
+threshold:
+  objective: "cost"             # pick threshold minimizing business cost on validation
+  fp_cost: 5.0                  # $ cost of one false alarm (support call + friction)
+  fn_cost_mode: "amount"        # missed fraud costs the actual transaction amount
+  grid_points: 500
+
+risk_levels:                    # probability bands for the inference API
+  medium: 0.30
+  high: 0.70
+
+logging:
+  level: "INFO"
+  file: "logs/pipeline.log"

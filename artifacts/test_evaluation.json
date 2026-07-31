@@ -1,0 +1,33 @@
+{
+  "default_threshold": {
+    "threshold": 0.5,
+    "precision": 0.9759036144578314,
+    "recall": 0.8526315789473684,
+    "f1": 0.9101123595505618,
+    "roc_auc": 0.9879308075090176,
+    "pr_auc": 0.9174728522575217,
+    "tn": 5995,
+    "fp": 2,
+    "fn": 14,
+    "tp": 81
+  },
+  "tuned_threshold": {
+    "threshold": 0.449,
+    "precision": 0.9642857142857143,
+    "recall": 0.8526315789473684,
+    "f1": 0.9050279329608939,
+    "roc_auc": 0.9879308075090176,
+    "pr_auc": 0.9174728522575217,
+    "tn": 5994,
+    "fp": 3,
+    "fn": 14,
+    "tp": 81
+  },
+  "business_cost": {
+    "no_model_cost": 6130.940000000001,
+    "default_cost": 1013.65,
+    "tuned_cost": 1018.65,
+    "fp_unit_cost": 5.0,
+    "savings_vs_no_model_pct": 83.4
+  }
+}

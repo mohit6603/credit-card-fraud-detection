@@ -1,0 +1,23 @@
+# Data (large files - regenerate via src/data_loader.py)
+data/raw/*.csv
+data/processed/*.csv
+data/processed/*.parquet
+
+# Models (large binaries - regenerate via src/train_pipeline.py)
+models/*.pkl
+models/*.joblib
+
+# Logs
+logs/*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
