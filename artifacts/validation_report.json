@@ -1,0 +1,29 @@
+{
+  "n_rows": 284807,
+  "n_columns": 31,
+  "schema": {
+    "passed": true,
+    "issues": []
+  },
+  "missing": {
+    "passed": true,
+    "missing_by_column": {},
+    "total_missing": 0
+  },
+  "duplicates": {
+    "passed": false,
+    "n_duplicates": 1081
+  },
+  "invalid_values": {
+    "passed": true,
+    "issues": []
+  },
+  "target_distribution": {
+    "passed": true,
+    "n_genuine": 284315,
+    "n_fraud": 492,
+    "fraud_rate": 0.001727,
+    "imbalance_ratio": 577.9
+  },
+  "passed": true
+}
