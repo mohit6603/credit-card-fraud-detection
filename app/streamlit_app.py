@@ -66,34 +66,42 @@ def render_result(result: dict) -> None:
     st.progress(min(max(proba, 0.0), 1.0))
 
 
+def _load_sample(pool: pd.DataFrame, cls_value: int) -> None:
+    """Copy a random real transaction into the input widgets' state.
+
+    Widget keys must be written directly: once a keyed widget exists,
+    Streamlit ignores its `value=` argument on reruns.
+    """
+    row = pool[pool["Class"] == cls_value].sample(1).iloc[0]
+    for name in RAW_INPUT_COLUMNS:
+        st.session_state[f"in_{name}"] = float(row[name])
+
+
 def single_prediction_tab(detector: FraudDetector) -> None:
     st.subheader("Score a single transaction")
     pool = get_sample_pool()
 
-    if "txn" not in st.session_state:
-        st.session_state.txn = {c: 0.0 for c in RAW_INPUT_COLUMNS}
+    for name in RAW_INPUT_COLUMNS:
+        st.session_state.setdefault(f"in_{name}", 0.0)
 
     if pool is not None:
         b1, b2, _ = st.columns([1, 1, 2])
         if b1.button("🎲 Load random GENUINE transaction"):
-            row = pool[pool["Class"] == 0].sample(1).iloc[0]
-            st.session_state.txn = {c: float(row[c]) for c in RAW_INPUT_COLUMNS}
+            _load_sample(pool, 0)
         if b2.button("🎯 Load random FRAUD transaction"):
-            row = pool[pool["Class"] == 1].sample(1).iloc[0]
-            st.session_state.txn = {c: float(row[c]) for c in RAW_INPUT_COLUMNS}
+            _load_sample(pool, 1)
     else:
         st.info("Raw dataset not found - enter values manually.")
 
     with st.expander("Transaction values (editable)", expanded=False):
         cols = st.columns(4)
         for i, name in enumerate(RAW_INPUT_COLUMNS):
-            st.session_state.txn[name] = cols[i % 4].number_input(
-                name, value=float(st.session_state.txn[name]), format="%.6f",
-                key=f"in_{name}")
+            cols[i % 4].number_input(name, format="%.6f", key=f"in_{name}")
 
     if st.button("🔍 Score transaction", type="primary"):
+        txn = {c: float(st.session_state[f"in_{c}"]) for c in RAW_INPUT_COLUMNS}
         try:
-            result = detector.predict_one(st.session_state.txn)
+            result = detector.predict_one(txn)
         except ValueError as exc:
             st.error(f"Invalid input: {exc}")
             return

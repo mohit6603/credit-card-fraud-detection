@@ -106,8 +106,20 @@ streamlit run app/streamlit_app.py
 
 ## Results
 
+**Champion: XGBoost + class weighting** (selected from 17 model × strategy combinations by
+validation PR-AUC), decision threshold 0.669 (business-cost optimal). Held-out test set:
+
+| Precision | Recall | F1 | PR-AUC | ROC-AUC | FP / 56,651 genuine | Cost saved vs no model |
+|---|---|---|---|---|---|---|
+| 0.960 | 0.758 | 0.847 | 0.821 | 0.973 | 3 | 74.1% |
+
+Notable negative results (documented in [reports/RESULTS.md](reports/RESULTS.md)): random
+undersampling consistently degraded every model; SMOTE+Tomek matched plain SMOTE at 20–60× the
+cost; LightGBM collapsed under extreme class weighting (scale_pos_weight≈601) while XGBoost did
+not; hyperparameter tuning failed to beat XGBoost defaults and was rejected by the
+keep-only-if-better guardrail.
+
 See [reports/RESULTS.md](reports/RESULTS.md) for the full report with all figures.
-Headline numbers are filled in by the training pipeline run documented there.
 
 ## Future improvements
 
